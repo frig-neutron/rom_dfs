@@ -47,9 +47,11 @@ def nonZeroIndexes(numbers):
     i+=1
   return nonZeroIndexes
 
-# transform matrix to list of ObjectRel
-# index of ObjectRel in return list == oid-1
 def objectRel(rommat):
+  """Transform square ROM association matrix to list of ObjectRel.
+
+  index of ObjectRel in return list == oid-1"""
+
   assertMatrixSqure(rommat)
   oid=0
   rels=[]
@@ -63,13 +65,24 @@ def objectRel(rommat):
 
 def oidList(rels): return map(lambda r: r.oid, rels)
 
-# depth first traversal of object
-# args: 
-#   oids to visit, in order of importance
-#   rels list, ordered by oid
-# returns oids to question for object
+def d(o):
+  print(o)
+  return o
+
 def objectRelTraverse(rels):
+  """Determine generic quesiton order for ROM diagram.
+
+  args: 
+    oids to visit, in order of importance
+    rels list, ordered by oid
+    returns oids to question for object"""
   sortedRels=sorted(rels)
+
+  rels=dict(    # enable oid-based lookup w/o list indices
+    map(
+      lambda rel: (rel.oid, rel), 
+      rels))
+  
   nextOids=oidList(sortedRels)
 
   nextOids.reverse() # convert to stack
@@ -77,7 +90,7 @@ def objectRelTraverse(rels):
   traversal=[]
   while len(nextOids) > 0:
     thisOid=nextOids.pop()
-    this=rels[thisOid-1]
+    this=rels[thisOid]
     if this not in visited:
       traversal.append(this)
       visited.add(this)

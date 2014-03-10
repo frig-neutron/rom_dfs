@@ -2,6 +2,9 @@
 import unittest
 import romgenseq
 
+def rel(oid, rel=[]): return romgenseq.ObjectRel(oid, rel)
+def oids(rels): return map(lambda r: r.oid, rels)
+
 class RomGenSeqTest(unittest.TestCase):
   def test_rommat2rels(self): 
     rommat=[
@@ -20,31 +23,48 @@ class RomGenSeqTest(unittest.TestCase):
     self.assertEqual(rels[2].oid, 3)
     self.assertEqual(rels[2].rel, [2,3])
 
+  def test_traversalConnected(self):
+    rels=[
+      rel(4, [5]), 
+      rel(5, [4,8]),
+      rel(6),
+      rel(7, [6]),
+      rel(8, [5,6,7,9]),
+      rel(9, [13]),
+      rel(10),
+      rel(11),
+      rel(12,  [10,11]),
+      rel(13,  [9,12])
+    ]
+
+    expectedTrav=[4,5,6,7,10,11,12,13,9,8]
+    actualTrav=oids(romgenseq.objectRelTraverse(rels))
+
+    self.assertEqual(expectedTrav, actualTrav)
+
   def test_traversal(self):
-    def toObjRel(oid, rel=[]): return romgenseq.ObjectRel(oid, rel)
 
     rels=[
-      toObjRel(1, [3]),
-      toObjRel(2),
-      toObjRel(3, [1,2,4]),
-      toObjRel(4, [5]),
-      toObjRel(5, [4,8]),
-      toObjRel(6),
-      toObjRel(7, [6]),
-      toObjRel(8, [5,6,7,9]),
-      toObjRel(9, [13]),
-      toObjRel(10),  
-      toObjRel(11),
-      toObjRel(12,  [10,11]),
-      toObjRel(13,  [9,12])
+      rel(1, [3]),
+      rel(2),
+      rel(3, [1,2,4]),
+      rel(4, [5]),
+      rel(5, [4,8]),
+      rel(6),
+      rel(7, [6]),
+      rel(8, [5,6,7,9]),
+      rel(9, [13]),
+      rel(10),
+      rel(11),
+      rel(12,  [10,11]),
+      rel(13,  [9,12])
     ]
 
     expectedTrav=[2,1,3,11,10,12,13,9,7,6,4,5,8]
-    actualTrav=map(
-      lambda r: r.oid, 
-      romgenseq.objectRelTraverse(rels))
+    actualTrav=oids(romgenseq.objectRelTraverse(rels))
 
     self.assertEqual(expectedTrav, actualTrav)
+
 
 
 if __name__ == '__main__':
