@@ -12,12 +12,6 @@
 
 import functools;
 
-rommat=[
-  [0, 2, 0],
-  [0, 0, 3],
-  [1, 0, 3],
-]
-
 @functools.total_ordering
 class ObjectRel(object): 
   "store incoming links to object"
@@ -54,7 +48,9 @@ def nonZeroIndexes(numbers):
   return nonZeroIndexes
 
 # transform matrix to list of ObjectRel
+# index of ObjectRel in return list == oid-1
 def objectRel(rommat):
+  assertMatrixSqure(rommat)
   oid=0
   rels=[]
   for inRel in transposed(rommat):
@@ -65,18 +61,22 @@ def objectRel(rommat):
       rels+=[ObjectRel(oid,relOids)]
   return rels;
 
+def oidList(rels): return map(lambda r: r.oid, rels)
+
 # depth first traversal of object
 # args: 
 #   oids to visit, in order of importance
 #   rels list, ordered by oid
 # returns oids to question for object
-def objectRelTraverse(nextOids, rels):
+def objectRelTraverse(rels):
+  sortedRels=sorted(rels)
+  nextOids=oidList(sortedRels)
+
   nextOids.reverse() # convert to stack
   visited=set()
   traversal=[]
   while len(nextOids) > 0:
     thisOid=nextOids.pop()
-    print thisOid
     this=rels[thisOid-1]
     if this not in visited:
       traversal.append(this)
@@ -85,12 +85,8 @@ def objectRelTraverse(nextOids, rels):
   traversal.reverse()
   return traversal
   
-def oidList(rels): return map(lambda r: r.oid, rels)
 
-assertMatrixSqure(rommat)
-rels=objectRel(rommat)
-sortedRels=sorted(rels)
-sortedOids=oidList(sortedRels)
-print sortedOids
-trav=objectRelTraverse(sortedOids, rels)
-print oidList(trav)
+if __name__ == '__main__':
+  rels=objectRel(rommat)
+  trav=objectRelTraverse(rels)
+  print oidList(trav)
