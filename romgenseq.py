@@ -65,8 +65,8 @@ def objectRel(rommat):
 
 def oidList(rels): return map(lambda r: r.oid, rels)
 
-def d(o):
-  print(o)
+def d(o, msg=""):
+  print(msg+" "+str(o))
   return o
 
 def objectRelTraverse(rels):
@@ -76,25 +76,33 @@ def objectRelTraverse(rels):
     oids to visit, in order of importance
     rels list, ordered by oid
     returns oids to question for object"""
-  sortedRels=sorted(rels)
 
+  sortedRels=sorted(rels)
+  nextOids=oidList(sortedRels)
   rels=dict(    # enable oid-based lookup w/o list indices
     map(
       lambda rel: (rel.oid, rel), 
       rels))
-  
-  nextOids=oidList(sortedRels)
+
+  def pushInbound(obj):
+    oRels=map(lambda r: rels[r], obj.rel) 
+    oRels.sort()
+    oRels.reverse()
+    d(oRels, "rels")
+    nextOids.extend(oidList(oRels))
 
   nextOids.reverse() # convert to stack
   visited=set()
   traversal=[]
   while len(nextOids) > 0:
+    d(nextOids, "next")
     thisOid=nextOids.pop()
     this=rels[thisOid]
     if this not in visited:
+      d(this, 'PICK')
       traversal.append(this)
       visited.add(this)
-      nextOids += this.rel
+      pushInbound(this)
   traversal.reverse()
   return traversal
   
