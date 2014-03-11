@@ -35,7 +35,6 @@ class RomGenSeqTest(unittest.TestCase):
     self.assertEqual(expectedOrder, actualOrder)
 
   def test_traversalConnected(self):
-    return
     rels=[
       rel(4, [5]), 
       rel(5, [4,8]),
@@ -50,12 +49,11 @@ class RomGenSeqTest(unittest.TestCase):
     ]
 
     expectedTrav=[4,5,6,7,10,11,12,13,9,8]
-    actualTrav=oids(romgenseq.objectRelTraverse(rels))
+    actualTrav=romgenseq.objectRelTraverse(rels)
 
     self.assertEqual(expectedTrav, actualTrav)
 
   def test_traversal(self):
-    return
     rels=[
       rel(1, [3]),
       rel(2),
@@ -66,8 +64,8 @@ class RomGenSeqTest(unittest.TestCase):
       rel(8, [5,6,7]),
     ]
 
-    expectedTrav=[4,5,6,7,10,11,12,13,9,8]
-    actualTrav=oids(romgenseq.objectRelTraverse(rels))
+    expectedTrav=[5,6,7,8,1,2,3]
+    actualTrav=romgenseq.objectRelTraverse(rels)
 
     self.assertEqual(expectedTrav, actualTrav)
 
