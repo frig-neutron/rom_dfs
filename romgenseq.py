@@ -77,33 +77,26 @@ def objectRelTraverse(rels):
     rels list, ordered by oid
     returns oids to question for object"""
 
-  sortedRels=sorted(rels)
-  nextOids=oidList(sortedRels)
-  rels=dict(    # enable oid-based lookup w/o list indices
+  # enable oid-based lookup w/o list indices
+  relsDict=dict(    
     map(
       lambda rel: (rel.oid, rel), 
       rels))
 
-  def pushInbound(obj):
-    oRels=map(lambda r: rels[r], obj.rel) 
-    oRels.sort()
-    oRels.reverse()
-    d(oRels, "rels")
-    nextOids.extend(oidList(oRels))
-
-  nextOids.reverse() # convert to stack
   visited=set()
+  
+  def dfs(obj):
+    traversal=[]
+    if obj not in visited:
+      visited.add(obj)
+      for r in sorted(map(lambda r: relsDict[r], obj.rel)):
+        traversal.extend(dfs(r))
+      traversal.append(obj.oid)
+    return traversal
+
   traversal=[]
-  while len(nextOids) > 0:
-    d(nextOids, "next")
-    thisOid=nextOids.pop()
-    this=rels[thisOid]
-    if this not in visited:
-      d(this, 'PICK')
-      traversal.append(this)
-      visited.add(this)
-      pushInbound(this)
-  traversal.reverse()
+  for o in sorted(rels):
+    traversal.extend(dfs(o))
   return traversal
   
 

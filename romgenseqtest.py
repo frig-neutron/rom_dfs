@@ -31,7 +31,7 @@ class RomGenSeqTest(unittest.TestCase):
       rel(3),
     ]
     expectedOrder=[2,1,3,0]
-    actualOrder=oids(romgenseq.objectRelTraverse(rels))
+    actualOrder=romgenseq.objectRelTraverse(rels)
     self.assertEqual(expectedOrder, actualOrder)
 
   def test_traversalConnected(self):
