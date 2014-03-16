@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # 
 # EBD generic question sequencing based on 
 # ROM incidence matrix
@@ -101,6 +102,12 @@ def objectRelTraverse(rels):
   
 
 if __name__ == '__main__':
-  rels=objectRel(rommat)
-  trav=objectRelTraverse(rels)
-  print oidList(trav)
+  import csv
+  import sys
+  infile=sys.argv[1]
+  with open(infile, 'rb') as csvfile:
+    reader=csv.reader(csvfile)
+    rommat=[map(int, row) for row in reader]
+    rels=objectRel(rommat)
+    trav=objectRelTraverse(rels)
+    print trav
