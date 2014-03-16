@@ -100,14 +100,17 @@ def objectRelTraverse(rels):
     traversal.extend(dfs(o))
   return traversal
   
-
 if __name__ == '__main__':
   import csv
   import sys
+  import re
+  outfileInfix=lambda s: "-traversal"+s.group(0)
   infile=sys.argv[1]
+  # try to replace extension if available, or best attempt
+  outfile=re.sub(r'\.?.{1,3}$', outfileInfix, infile)
   with open(infile, 'rb') as csvfile:
     reader=csv.reader(csvfile)
     rommat=[map(int, row) for row in reader]
     rels=objectRel(rommat)
     trav=objectRelTraverse(rels)
-    print trav
+    print ",".join(map(str, trav))
